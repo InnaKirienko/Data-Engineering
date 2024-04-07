@@ -3,5 +3,7 @@ import os
 AUTH_TOKEN = os.getenv('AUTH_TOKEN')
 
 if not AUTH_TOKEN:
-  print("Error: AUTH_TOKEN environment variable not set!")
+  print("Помилка: Змінна середовища AUTH_TOKEN не встановлена!")
   exit(1)
+
+# Решта вашого коду, який використовує AUTH_TOKEN
