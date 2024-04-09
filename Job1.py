@@ -7,7 +7,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 AUTH_TOKEN = os.environ.get('AUTH_TOKEN')
-
+BASE_DIR = os.environ.get("BASE_DIR")
 
 def clear_directory(directory):
     # Очистка вмісту директорії
@@ -65,3 +65,5 @@ def handle_post_request():
 
 if __name__ == '__main__':
     app.run(port=8081)
+
+

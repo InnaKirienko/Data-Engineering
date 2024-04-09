@@ -9,7 +9,8 @@ AUTH_TOKEN = os.environ['AUTH_TOKEN']
 app = Flask(__name__)
 
 # Функція для обробки POST-запитів
-@app.route('/sales', methods=['POST'])
+@app.route('/sales', methods=['POST']) # під питанням
+
 def sales():
     # Отримання JSON-об'єкта з запиту
     data = request.get_json()
