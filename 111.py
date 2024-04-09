@@ -1,3 +1,4 @@
+# приклад
 import os
 import requests
 
