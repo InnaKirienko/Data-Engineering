@@ -10,7 +10,7 @@ def main():
 
     response = requests.get(
         url='https://fake-api-vycpfa6oca-uc.a.run.app/sales',
-        params={'date': '2022-08-09', 'page': 2},
+        params={'date': '2022-08-09', 'page': 5},
         headers={'Authorization': AUTH_TOKEN},
     )
     print("Response status code:", response.status_code)

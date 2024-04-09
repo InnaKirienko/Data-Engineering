@@ -22,7 +22,9 @@ def fetch_sales_data(date, page):
     params = {'date': date, 'page': page}
     headers = {'Authorization': AUTH_TOKEN}
     response = requests.get(url, params=params, headers=headers)
-    return response.json()
+    if response.status_code == 404 :
+        return "requested page that doesn't exist"
+    else : return response.json()
 
 
 def save_sales_data_to_file(directory, date, page, data):
@@ -53,10 +55,11 @@ def handle_post_request():
         page = 1
         while True:
             sales_data = fetch_sales_data(date, page)
-            if not sales_data:
+            if sales_data == "requested page that doesn't exist":
                 break
-            save_sales_data_to_file(directory, date, page, sales_data)
-            page += 1
+            else:
+                save_sales_data_to_file(directory, date, page, sales_data)
+                page += 1
 
         return jsonify({'message': 'Sales data fetched and saved successfully'}), 200
     else:
