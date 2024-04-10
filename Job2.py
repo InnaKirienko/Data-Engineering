@@ -3,7 +3,7 @@ import json
 import fastavro
 from flask import Flask, request, jsonify
 
-app = Flask(__name__)
+app2 = Flask(__name__)
 
 def clear_directory(directory):
     # Очистка вмісту директорії
@@ -24,9 +24,9 @@ def convert_json_to_avro(directory):
                 records = data.get('records')
                 with open(avro_filepath, 'wb') as avro_file:
                     fastavro.writer(avro_file, schema=schema, records=records)
-            #os.remove(json_filepath)  # Видалення оригінального JSON файлу
+            os.remove(json_filepath)  # Видалення оригінального JSON файлу
 
-@app.route('/', methods=['POST'])
+@app2.route('/', methods=['POST'])
 def handle_post_request():
     # Отримання JSON-об'єкту з запиту
     data = request.json
@@ -57,4 +57,6 @@ def handle_post_request():
         return jsonify({'error': 'Invalid JSON format'}), 400
 
 if __name__ == '__main__':
-    app.run(port=8082)
+    app2.run(port=8082)
+
+
