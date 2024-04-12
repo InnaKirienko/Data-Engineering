@@ -9,6 +9,15 @@ app = Flask(__name__)
 AUTH_TOKEN = os.environ.get('AUTH_TOKEN')
 BASE_DIR = os.environ.get("BASE_DIR")
 
+if not AUTH_TOKEN:
+  print("Помилка: Змінна середовища AUTH_TOKEN не встановлена!")
+  exit(1)
+
+if not BASE_DIR:
+  print("Помилка: Змінна середовища BASE_DIR не встановлена!")
+  exit(1)
+
+
 def clear_directory(directory):
     # Очистка вмісту директорії
     file_list = os.listdir(directory)

@@ -2,6 +2,7 @@ import os
 import json
 import fastavro
 from flask import Flask, request, jsonify
+from fastavro import json_reader
 
 app2 = Flask(__name__)
 
@@ -26,6 +27,31 @@ def convert_json_to_avro(directory):
                     fastavro.writer(avro_file, schema=schema, records=records)
             os.remove(json_filepath)  # Видалення оригінального JSON файлу
 
+def convert_json_to_avro2(dir1,dir2):
+    # Конвертування файлів з JSON у Avro формат
+    for filename in os.listdir(dir1):
+        if filename.endswith('.json'):
+            json_filepath = os.path.join(dir1, filename)
+            avro_filename = filename[:-5] + ".avro"  # Зміна розширення
+            avro_filepath = os.path.join(dir2, avro_filename)
+            with open(json_filepath, 'r') as json_file:
+                data = json.load(json_file)
+                schema = {
+                    "type": "record",
+                    "name": "Sales",
+                    "fields": [
+                        {"name": "client", "type": "string"},
+                        {"name": "purchase_date", "type": "string"},
+                        {"name": "product", "type": "string"},
+                        {"name": "price", "type": "float"}
+                    ]
+                }
+
+                records = data
+                with open(avro_filepath, 'wb') as avro_file:
+                    fastavro.writer(avro_file, schema=schema, records=records)
+            #os.remove(json_filepath)  # Видалення оригінального JSON файлу
+
 @app2.route('/', methods=['POST'])
 def handle_post_request():
     # Отримання JSON-об'єкту з запиту
@@ -44,13 +70,13 @@ def handle_post_request():
 
         # Перенесення файлів та конвертація JSON в Avro
         #raw_directory = os.path.join(raw_dir, 'sales', stg_dir[-10:])
-        convert_json_to_avro(raw_dir)
+        convert_json_to_avro2(raw_dir,stg_dir)
 
         # Копіювання файлів формату Avro в stg директорію
-        for filename in os.listdir(raw_dir):
-            src_path = os.path.join(raw_dir, filename)
-            dst_path = os.path.join(stg_dir, filename)
-            os.rename(src_path, dst_path)
+#        for filename in os.listdir(raw_dir):
+ #           src_path = os.path.join(raw_dir, filename)
+  #          dst_path = os.path.join(stg_dir, filename)
+   #         os.rename(src_path, dst_path)
 
         return jsonify({'message': 'JSON files converted to Avro and moved to stg directory successfully'}), 200
     else:
