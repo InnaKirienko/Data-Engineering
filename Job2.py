@@ -47,9 +47,8 @@ def convert_json_to_avro2(dir1,dir2):
                     ]
                 }
 
-                records = data
                 with open(avro_filepath, 'wb') as avro_file:
-                    fastavro.writer(avro_file, schema=schema, records=records)
+                    fastavro.writer(avro_file, schema=schema, records=data)
             #os.remove(json_filepath)  # Видалення оригінального JSON файлу
 
 @app2.route('/', methods=['POST'])
@@ -78,7 +77,7 @@ def handle_post_request():
   #          dst_path = os.path.join(stg_dir, filename)
    #         os.rename(src_path, dst_path)
 
-        return jsonify({'message': 'JSON files converted to Avro and moved to stg directory successfully'}), 200
+        return jsonify({'message': 'JSON files converted to Avro and moved to stg directory successfully'}), 201
     else:
         return jsonify({'error': 'Invalid JSON format'}), 400
 

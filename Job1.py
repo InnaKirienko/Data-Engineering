@@ -2,7 +2,6 @@ import os
 import requests
 import json
 from flask import Flask, request, jsonify
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -56,11 +55,11 @@ def handle_post_request():
         raw_dir = data['raw_dir']
 
         # Створення шляху для зберігання
-        directory = os.path.join(raw_dir, 'sales', date)
-        os.makedirs(directory, exist_ok=True)
+        #directory = os.path.join(raw_dir, 'sales', date)
+        os.makedirs(raw_dir, exist_ok=True)
 
         # Очищення вмісту директорії
-        clear_directory(directory)
+        clear_directory(raw_dir)
 
         page = 1
         while True:
@@ -68,10 +67,10 @@ def handle_post_request():
             if sales_data == "requested page doesn't exist":
                 break
             else:
-                save_sales_data_to_file(directory, date, page, sales_data)
+                save_sales_data_to_file(raw_dir, date, page, sales_data)
                 page += 1
 
-        return jsonify({'message': 'Sales data fetched and saved successfully'}), 200
+        return jsonify({'message': 'Sales data fetched and saved successfully'}), 201
     else:
         return jsonify({'error': 'Invalid JSON format'}), 400
 
