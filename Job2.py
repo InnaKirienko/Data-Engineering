@@ -6,14 +6,14 @@ from flask import Flask, request, jsonify
 app2 = Flask(__name__)
 
 # Очистка вмісту директорії
-def clear_directory(directory):
+def clear_directory(directory : str ) -> None:
     file_list = os.listdir(directory)
     for file in file_list:
         os.remove(os.path.join(directory, file))
 
 
 # Конвертування файлів з JSON у Avro формат
-def convert_json_to_avro(dir1,dir2):
+def convert_json_to_avro(dir1 : str, dir2 : str ) -> None:
     # Конвертування файлів з JSON у Avro формат
     for filename in os.listdir(dir1):
         if filename.endswith('.json'):

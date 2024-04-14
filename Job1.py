@@ -6,33 +6,34 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 AUTH_TOKEN = os.environ.get('AUTH_TOKEN')
-#BASE_DIR = os.environ.get("BASE_DIR")
+# BASE_DIR = os.environ.get("BASE_DIR")
 
 if not AUTH_TOKEN:
-  print("Помилка: Змінна середовища AUTH_TOKEN не встановлена!")
-  exit(1)
+    print("Помилка: Змінна середовища AUTH_TOKEN не встановлена!")
+    exit(1)
 
 
-# Очистка вмісту директорії
-def clear_directory(directory):
+def clear_directory(directory: str) -> None:
+    #Очищення вмісту директорії.
     file_list = os.listdir(directory)
     for file in file_list:
         os.remove(os.path.join(directory, file))
 
 
-# Функція для отримання даних з API та завантаження у форматі json
-def get_sales_data(date, page):
+def get_sales_data(date: str, page: int) -> dict:
+    #Отримання даних з API та завантаження у форматі json.
     url = 'https://fake-api-vycpfa6oca-uc.a.run.app/sales'
     params = {'date': date, 'page': page}
     headers = {'Authorization': AUTH_TOKEN}
     response = requests.get(url, params=params, headers=headers)
-    if response.status_code == 404 :
-        return "requested page doesn't exist"
+    if response.status_code == 404:
+        return {"error": "requested page doesn't exist"}
     else:
         return response.json()
 
-# Функція для зберігання даних у файл
-def save_sales_data_to_file(directory, date, page, data):
+
+def save_sales_data_to_file(directory: str, date: str, page: int, data: dict) -> None:
+    #Збереження даних у файл
     filename = f"sales_{date}_{page}.json"
     filepath = os.path.join(directory, filename)
     with open(filepath, 'w') as f:
@@ -40,7 +41,8 @@ def save_sales_data_to_file(directory, date, page, data):
 
 
 @app.route('/', methods=['POST'])
-def handle_post_request():
+def handle_post_request() -> tuple:
+    # Обробка POST-запиту
     # Отримання JSON-об'єкту з запиту
     data = request.json
 
@@ -55,11 +57,11 @@ def handle_post_request():
         # Очищення вмісту директорії
         clear_directory(raw_dir)
 
-        # Отримання даних з API та завантаження їх у файл у вказану запитом директорію
+        # Отримання даних з API та завантаження їх у файл, у вказану запитом директорію
         page = 1
         while True:
             sales_data = get_sales_data(date, page)
-            if sales_data == "requested page doesn't exist":
+            if "error" in sales_data:
                 break
             else:
                 save_sales_data_to_file(raw_dir, date, page, sales_data)
@@ -72,5 +74,3 @@ def handle_post_request():
 
 if __name__ == '__main__':
     app.run(port=8081)
-
-

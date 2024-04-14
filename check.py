@@ -26,7 +26,7 @@ def run_job1():
         }
     )
     assert resp.status_code == 201
-    print(resp.status_code)
+    #print(resp.status_code)
     print("job1 completed!")
 
 
