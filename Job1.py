@@ -41,7 +41,7 @@ def save_sales_data_to_file(directory: str, date: str, page: int, data: dict) ->
 
 
 @app.route('/', methods=['POST'])
-def handle_post_request() -> tuple:
+def handle_post_request():
     # Обробка POST-запиту
     # Отримання JSON-об'єкту з запиту
     data = request.json
