@@ -1,9 +1,10 @@
 # sales_api.py
 
 import requests
+from settings import AUTH_TOKEN
 
-def get_sales_data(date: str, page: int, AUTH_TOKEN: str) -> dict:
-    #Getting data from the API and uploading it in json format.
+def get_sales_data(date: str, page: int) -> dict:
+    # Getting data from the API and uploading it in json format.
     url = 'https://fake-api-vycpfa6oca-uc.a.run.app/sales'
     params = {'date': date, 'page': page}
     headers = {'Authorization': AUTH_TOKEN}

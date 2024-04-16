@@ -7,21 +7,20 @@ from sales_api import get_sales_data
 
 app = Flask(__name__)
 
-
 if not AUTH_TOKEN:
     print("Error: ENVIRONMENT VARIABLE AUTH_TOKEN NOT SET!")
     exit(1)
 
 
 def clear_directory(directory: str) -> None:
-    #Cleaning the contents of the directory
+    # Cleaning the contents of the directory
     file_list = os.listdir(directory)
     for file in file_list:
         os.remove(os.path.join(directory, file))
 
 
 def save_sales_data_to_file(directory: str, date: str, page: int, data: dict) -> None:
-    #Saving data to a file
+    # Saving data to a file
     filename = f"sales_{date}_{page}.json"
     filepath = os.path.join(directory, filename)
     with open(filepath, 'w') as f:
@@ -55,7 +54,6 @@ def handle_post_request():
             else:
                 save_sales_data_to_file(raw_dir, date, page, sales_data)
                 page += 1
-
 
         return jsonify({'message': 'Sales data fetched and saved successfully'}), 201
     else:

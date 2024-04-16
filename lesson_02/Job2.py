@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 
 app2 = Flask(__name__)
 
+
 # Cleaning the contents of the directory
 def clear_directory(directory : str ) -> None:
     file_list = os.listdir(directory)
