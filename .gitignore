@@ -6,4 +6,15 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-.idea/
+/.idea/
+**/airflow_env/
+**/config/
+**/logs/
+**/plugins/
+**/docker-compose.yml
+**/Dockerfile.txt
+**/install_airflow.*
+**/run_airflow.*
+
+**/*.env
+**/*.log

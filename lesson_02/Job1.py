@@ -32,6 +32,7 @@ def handle_post_request():
     # POST request processing
     # Getting a JSON object from a request
     data = request.json
+    print(data)
 
     # Checking whether the object and its properties exist
     if data and 'date' in data and 'raw_dir' in data:
