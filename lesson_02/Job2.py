@@ -7,14 +7,14 @@ app2 = Flask(__name__)
 
 
 # Cleaning the contents of the directory
-def clear_directory(directory : str ) -> None:
+def clear_directory(directory: str) -> None:
     file_list = os.listdir(directory)
     for file in file_list:
         os.remove(os.path.join(directory, file))
 
 
 # Convert files from JSON to Avro format
-def convert_json_to_avro(dir1 : str, dir2 : str ) -> None:
+def convert_json_to_avro(dir1: str, dir2: str) -> None:
     schema_filepath = 'sales_schema.avsc'
 
     with open(schema_filepath, 'r') as schema_file:
@@ -46,13 +46,12 @@ def handle_post_request():
         clear_directory(stg_dir)
 
         # File transfer and conversion of JSON to Avro
-        convert_json_to_avro(raw_dir,stg_dir)
+        convert_json_to_avro(raw_dir, stg_dir)
 
         return jsonify({'message': 'JSON files converted to Avro and moved to stg directory successfully'}), 201
     else:
         return jsonify({'error': 'Invalid input data'}), 400
 
+
 if __name__ == '__main__':
     app2.run(port=8082)
-
-
