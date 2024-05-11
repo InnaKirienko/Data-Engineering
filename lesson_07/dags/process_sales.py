@@ -54,47 +54,49 @@ def generate_stg_dir(execution_date, **kwargs):
     return stg_dir
 
 
-task1 = PythonOperator(
-    task_id='task_set_execution_date',
-    python_callable=set_execution_date,
-    provide_context=True,
-    dag=dag,
-)
+with (dag):
 
-task2 = PythonOperator(
-    task_id='task_set_raw_dir',
-    python_callable=generate_raw_dir,
-    provide_context=True,
-    dag=dag,
-)
+    task_set_execution_date = PythonOperator(
+        task_id='task_set_execution_date',
+        python_callable=set_execution_date,
+        provide_context=True,
+    )
 
-task3 = PythonOperator(
-    task_id='task_set_stg_dir',
-    python_callable=generate_stg_dir,
-    provide_context=True,
-    dag=dag,
-)
+    task_set_raw_dir = PythonOperator(
+        task_id='task_set_raw_dir',
+        python_callable=generate_raw_dir,
+        provide_context=True,
+    )
 
-task4 = HttpOperator(
-    task_id='extract_data_from_api',
-    method='POST',
-    http_conn_id='http_docker_internal_1',
-    data=json.dumps({"date": "{{ ti.xcom_pull(task_ids='task_set_execution_date') }}",
-                     "raw_dir": "{{ ti.xcom_pull(task_ids='task_set_raw_dir') }}"}),
-    headers={"Content-Type": "application/json"},
-    response_check=lambda response: response.status_code == 201,
-    dag=dag,
-)
+    task_set_stg_dir = PythonOperator(
+        task_id='task_set_stg_dir',
+        python_callable=generate_stg_dir,
+        provide_context=True,
+        dag=dag,
+    )
 
-task5 = HttpOperator(
-    task_id='convert_to_avro',
-    method='POST',
-    http_conn_id='http_docker_internal_2',
-    data=json.dumps({"raw_dir": "{{ ti.xcom_pull(task_ids='task_set_raw_dir') }}",
-                     "stg_dir": "{{ ti.xcom_pull(task_ids='task_set_stg_dir') }}"}),
-    headers={"Content-Type": "application/json"},
-    response_check=lambda response: response.status_code == 201,
-    dag=dag,
-)
+    task_extract_data_from_api = HttpOperator(
+        task_id='extract_data_from_api',
+        method='POST',
+        http_conn_id='http_docker_internal_1',
+        data=json.dumps({"date": "{{ ti.xcom_pull(task_ids='task_set_execution_date') }}",
+                        "raw_dir": "{{ ti.xcom_pull(task_ids='task_set_raw_dir') }}"}),
+        headers={"Content-Type": "application/json"},
+        response_check=lambda response: response.status_code == 201,
+    )
 
-task1 >> task2 >> task3 >> task4 >> task5
+    task_convert_to_avro = HttpOperator(
+        task_id='convert_to_avro',
+        method='POST',
+        http_conn_id='http_docker_internal_2',
+        data=json.dumps({"raw_dir": "{{ ti.xcom_pull(task_ids='task_set_raw_dir') }}",
+                        "stg_dir": "{{ ti.xcom_pull(task_ids='task_set_stg_dir') }}"}),
+        headers={"Content-Type": "application/json"},
+        response_check=lambda response: response.status_code == 201,
+    )
+
+    (task_set_execution_date >>
+     task_set_raw_dir >>
+     task_set_stg_dir >>
+     task_extract_data_from_api >>
+     task_convert_to_avro)
