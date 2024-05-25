@@ -1,1 +1,4 @@
 .idea/
+/data/
+/pyspark_env/
+/spark_core.ipynb
