@@ -5,10 +5,8 @@ from airflow.providers.google.cloud.operators.bigquery import (
     BigQueryExecuteQueryOperator
 )
 from airflow.operators.python import PythonOperator
-#from airflow.utils.dates import days_ago
 from datetime import datetime
 
-# DAG arguments
 PROJECT_ID = 'de-07-inna-kirienko'
 LOCATION = 'us'
 BUCKET = 'final_project_raw_bucket'
@@ -32,7 +30,6 @@ def create_source_objects(task_instance):
     return source_objects
 
 
-# Define the DAG
 with DAG(
         'process_customers_dag',
         default_args=default_args,
@@ -97,7 +94,6 @@ with DAG(
         }
     )
 
-
     # Task: Create source objects for BigQuery external table
     create_source_objects_task = PythonOperator(
         task_id='create_source_objects',
@@ -105,6 +101,4 @@ with DAG(
         provide_context=True
     )
 
-    # Set task dependencies
     list_gcs_files >> create_source_objects_task >> create_bronze_table >> transform_and_load_silver
-

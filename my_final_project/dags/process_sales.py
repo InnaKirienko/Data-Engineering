@@ -5,10 +5,8 @@ from airflow.providers.google.cloud.operators.bigquery import (
     BigQueryExecuteQueryOperator
 )
 from airflow.operators.python import PythonOperator
-from airflow.utils.dates import days_ago
 from datetime import datetime
 
-# DAG arguments
 PROJECT_ID = 'de-07-inna-kirienko'
 LOCATION = 'us'
 BUCKET = 'final_project_raw_bucket'
@@ -32,7 +30,7 @@ def create_source_objects(task_instance):
     source_objects = [f'{file}' for file in files if file.endswith('.csv')]
     return source_objects
 
-# Define the DAG
+
 with DAG(
     'process_sales_dag',
     default_args=default_args,
@@ -119,5 +117,4 @@ with DAG(
         provide_context=True
     )
 
-    # Set task dependencies
     list_gcs_files >> create_source_objects_task >> create_bronze_table >> transform_and_load_silver
